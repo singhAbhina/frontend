@@ -10,5 +10,18 @@ const axiosClient =  axios.create({
 });
 
 
+// ...existing code...
+
+axiosClient.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token'); // or sessionStorage if you use that
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
+
 export default axiosClient;
 
