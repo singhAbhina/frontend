@@ -5,7 +5,10 @@ import { Send } from 'lucide-react';
 
 function ChatAi({problem}) {
     const [messages, setMessages] = useState([
-        { role: 'model', parts:[{text: "Hi! I'm your DSA tutor. I can help you with hints, code review, and problem-solving strategies. What would you like help with today?"}]
+        { 
+            role: 'model', 
+            parts: [{text: "Hi! I'm your DSA tutor. I can help you with hints, code review, and problem-solving strategies. What would you like help with today?"}]
+        }
     ]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -19,7 +22,10 @@ function ChatAi({problem}) {
     const onSubmit = async (data) => {
         if (!data.message.trim()) return;
         
-        const userMessage = { role: 'user', parts:[{text: data.message.trim()}] };
+        const userMessage = { 
+            role: 'user', 
+            parts: [{text: data.message.trim()}] 
+        };
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
         reset();
@@ -28,7 +34,7 @@ function ChatAi({problem}) {
             console.log('🤖 Sending message to AI:', data.message);
             
             const response = await axiosClient.post("/ai/chat", {
-                messages: [...messages, userMessage], // Include the new user message
+                messages: [...messages, userMessage],
                 title: problem?.title || 'DSA Problem',
                 description: problem?.description || 'No description provided',
                 testCases: problem?.visibleTestCases || 'No test cases provided',
@@ -40,7 +46,7 @@ function ChatAi({problem}) {
             if (response.data.success && response.data.response) {
                 setMessages(prev => [...prev, { 
                     role: 'model', 
-                    parts:[{text: response.data.response}] 
+                    parts: [{text: response.data.response}] 
                 }]);
             } else {
                 throw new Error('Invalid response format from AI service');
@@ -59,7 +65,7 @@ function ChatAi({problem}) {
             
             setMessages(prev => [...prev, { 
                 role: 'model', 
-                parts:[{text: errorMessage}] 
+                parts: [{text: errorMessage}] 
             }]);
         } finally {
             setIsLoading(false);
