@@ -5,23 +5,38 @@ export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-    const response =  await axiosClient.post('/user/register', userData);
-    return response.data.user;
+      const response = await axiosClient.post('/user/register', userData);
+      
+      // Store token in localStorage if provided
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
+      
+      return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      console.error('Registration error:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'Registration failed';
+      return rejectWithValue({ message: errorMessage });
     }
   }
 );
-
 
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post('/user/login', credentials);
+      
+      // Store token in localStorage if provided
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
+      
       return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      console.error('Login error:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'Login failed';
+      return rejectWithValue({ message: errorMessage });
     }
   }
 );
